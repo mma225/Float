@@ -1,3 +1,4 @@
+
 name: Build NusaRebuilt Windows EXE
 
 on:
@@ -8,12 +9,13 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -26,6 +28,13 @@ jobs:
       - name: Build standalone EXE
         run: |
           pyinstaller --noconfirm --clean --windowed --onefile --name NusaRebuilt --collect-all PySide6 main.py
+
+      - name: Check EXE
+        run: |
+          if (!(Test-Path "dist/NusaRebuilt.exe")) {
+            Write-Error "NusaRebuilt.exe tidak ditemukan!"
+            exit 1
+          }
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
